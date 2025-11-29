@@ -1,0 +1,378 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="2487.7">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+  </style>
+</head>
+<body>
+<p class="p1">&lt;!DOCTYPE html&gt;</p>
+<p class="p1">&lt;html lang="zh-TW"&gt;</p>
+<p class="p1">&lt;head&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta charset="UTF-8"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;title&gt;教室大考驗&lt;/title&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"&gt;&lt;/script&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"&gt;&lt;/script&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&amp;display=swap" rel="stylesheet"&gt;</p>
+<p class="p2"><span class="Apple-converted-space">    </span></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;style&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>:root {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>--bg-color: #FFFBF0;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>--main-blue: #AEC6CF;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>--main-yellow: #FDFD96;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>--text-color: #555;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>--correct: #77DD77;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>--wrong: #FF6961;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>body {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-family: 'Noto Sans TC', sans-serif;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background-color: var(--bg-color);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>color: var(--text-color);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>margin: 0;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>padding: 20px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>text-align: center;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>/* 防止手機下拉重整干擾遊戲 */</p>
+<p class="p1"><span class="Apple-converted-space">            </span>overscroll-behavior-y: contain;<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>h1, h2 { color: var(--main-blue); text-shadow: 1px 1px 0px #fff; }</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>/* 按鈕樣式 */</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.btn {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background-color: var(--main-blue);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>color: white;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border: none;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>padding: 12px 24px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-size: 1.2rem;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border-radius: 50px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>cursor: pointer;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>box-shadow: 0 4px 0 #8aaebd;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>transition: transform 0.1s;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>margin: 10px;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.btn:active { transform: translateY(4px); box-shadow: 0 0 0 #8aaebd; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.btn-yellow { background-color: #e3e354; color: #555; box-shadow: 0 4px 0 #caca4b; }</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>/* 頁面切換控制 */</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.screen { display: none; max-width: 600px; margin: 0 auto; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.active { display: block; }</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>/* 遊戲區域樣式 */</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.game-container {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>display: flex;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>justify-content: space-between;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>gap: 10px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>margin-top: 20px;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>/* 手機版改為上下排列 */</p>
+<p class="p1"><span class="Apple-converted-space">        </span>@media (max-width: 600px) {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>.game-container { flex-direction: column; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>/* 卡片通用樣式 */</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.card-slot {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background: white;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border: 3px solid var(--main-blue);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border-radius: 15px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>padding: 10px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>min-height: 80px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>margin-bottom: 10px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>display: flex;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>align-items: center;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>justify-content: center;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.img-box {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>width: 100px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>height: 80px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background-color: #eee;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border-radius: 10px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>overflow: hidden;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>display: flex;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>align-items: center;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>justify-content: center;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-size: 0.8rem;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>color: #999;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.img-box img { width: 100%; height: 100%; object-fit: cover; }</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.draggable-item {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background-color: var(--main-yellow);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>padding: 10px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border-radius: 10px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>cursor: grab;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-weight: bold;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>margin: 5px 0;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>user-select: none; /* 防止選取文字 */</p>
+<p class="p1"><span class="Apple-converted-space">            </span>touch-action: none; /* 優化觸控 */</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>/* 遊戲 B 特有樣式 */</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.timeline-area {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background: rgba(174, 198, 207, 0.2);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border-radius: 20px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>padding: 15px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>min-height: 300px;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.timeline-label { font-size: 0.8rem; color: #888; margin: 5px 0; }</p>
+<p class="p2"><span class="Apple-converted-space">        </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>/* 結果回饋 */</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.wrong-answer { border: 3px solid var(--wrong) !important; animation: shake 0.5s; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.correct-answer { border: 3px solid var(--correct) !important; background-color: #eaffea; }</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>@keyframes shake {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>0% { transform: translateX(0); }</p>
+<p class="p1"><span class="Apple-converted-space">            </span>25% { transform: translateX(-5px); }</p>
+<p class="p1"><span class="Apple-converted-space">            </span>75% { transform: translateX(5px); }</p>
+<p class="p1"><span class="Apple-converted-space">            </span>100% { transform: translateX(0); }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/style&gt;</p>
+<p class="p1">&lt;/head&gt;</p>
+<p class="p1">&lt;body&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div id="menu-screen" class="screen active"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;h1&gt;🏫 教室大考驗 🏫&lt;/h1&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;p&gt;請選擇一個遊戲開始挑戰！&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;button class="btn" onclick="startGame('A')"&gt;遊戲 A：名稱連連看&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;br&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;button class="btn" onclick="startGame('B')"&gt;遊戲 B：新舊排排看&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div id="game-a-screen" class="screen"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;h2&gt;📍 教室名稱連連看&lt;/h2&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;p&gt;請將右側名稱拖曳到左側正確照片上&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="game-container"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div id="game-a-left" style="flex: 1;"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div id="game-a-right" style="flex: 1;"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;button class="btn" onclick="checkGameA()"&gt;送出答案&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;button class="btn btn-yellow" onclick="showScreen('menu-screen')"&gt;回首頁&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div id="game-b-screen" class="screen"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;h2&gt;⏳ 新舊教室排排看&lt;/h2&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;p&gt;將下方照片拖入時間軸，由舊(上)到新(下)排列&lt;/p&gt;</p>
+<p class="p2"><span class="Apple-converted-space">        </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="game-container"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div style="flex: 1;"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;h3&gt;待選區&lt;/h3&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div id="game-b-source" style="min-height: 100px; border: 2px dashed #ccc; border-radius: 10px; padding:10px;"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div style="flex: 1;" class="timeline-area"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="timeline-label"&gt;⬆️ 最舊 (Oldest)&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div id="game-b-target" style="min-height: 250px;"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="timeline-label"&gt;⬇️ 最新 (Newest)&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;button class="btn" onclick="checkGameB()"&gt;送出答案&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;button class="btn btn-yellow" onclick="showScreen('menu-screen')"&gt;回首頁&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;script&gt;</p>
+<p class="p1">// --- 正式版：讀取 CSV 資料 ---</p>
+<p class="p1"><span class="Apple-converted-space">        </span>let rawData = [];</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>// 當網頁載入完成後，自動讀取 CSV</p>
+<p class="p1"><span class="Apple-converted-space">        </span>window.onload = function() {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>Papa.parse("classrooms.csv", {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>download: true, <span class="Apple-converted-space">      </span>// 允許下載檔案</p>
+<p class="p1"><span class="Apple-converted-space">                </span>header: true, <span class="Apple-converted-space">        </span>// 第一行是標題</p>
+<p class="p1"><span class="Apple-converted-space">                </span>dynamicTyping: true,<span class="Apple-converted-space">  </span>// 自動判斷數字 (例如 year 會自動變成數字)</p>
+<p class="p1"><span class="Apple-converted-space">                </span>skipEmptyLines: true, // 跳過空行</p>
+<p class="p1"><span class="Apple-converted-space">                </span>complete: function(results) {</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>rawData = results.data;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>console.log("資料讀取成功！共讀取到 " + rawData.length + " 筆資料");</p>
+<p class="p2"><span class="Apple-converted-space">                    </span></p>
+<p class="p1"><span class="Apple-converted-space">                    </span>// 檢查圖片路徑 (如果是純檔名，這裡可以幫忙補上前綴，如果 CSV 裡已經是完整網址則不用動)</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>// rawData.forEach(item =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>//<span class="Apple-converted-space">    </span>if(!item.filenameOrUrl.startsWith('http')) {</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>//<span class="Apple-converted-space">        </span>item.img = './' + item.filenameOrUrl;<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">                    </span>//<span class="Apple-converted-space">    </span>} else {</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>//<span class="Apple-converted-space">        </span>item.img = item.filenameOrUrl;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>//<span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>// });</p>
+<p class="p2"><span class="Apple-converted-space">                    </span></p>
+<p class="p1"><span class="Apple-converted-space">                    </span>// 為了簡單起見，我們假設 CSV 裡的 filenameOrUrl 欄位會被對應到 img 屬性</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>rawData.forEach(item =&gt; item.img = item.filenameOrUrl);</p>
+<p class="p1"><span class="Apple-converted-space">                </span>},</p>
+<p class="p1"><span class="Apple-converted-space">                </span>error: function(err) {</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>alert("讀取 CSV 失敗，請確認檔案是否存在！");</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>console.error(err);</p>
+<p class="p1"><span class="Apple-converted-space">                </span>}</p>
+<p class="p1"><span class="Apple-converted-space">            </span>});</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>let currentLevelData = [];</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>// 切換畫面</p>
+<p class="p1"><span class="Apple-converted-space">        </span>function showScreen(screenId) {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>document.querySelectorAll('.screen').forEach(s =&gt; s.classList.remove('active'));</p>
+<p class="p1"><span class="Apple-converted-space">            </span>document.getElementById(screenId).classList.add('active');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>// 開始遊戲</p>
+<p class="p1"><span class="Apple-converted-space">        </span>function startGame(type) {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>// 隨機選取 5 筆資料</p>
+<p class="p1"><span class="Apple-converted-space">            </span>let shuffled = rawData.sort(() =&gt; 0.5 - Math.random());</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>if (type === 'A') {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>currentLevelData = shuffled.slice(0, 5);</p>
+<p class="p1"><span class="Apple-converted-space">                </span>initGameA();</p>
+<p class="p1"><span class="Apple-converted-space">                </span>showScreen('game-a-screen');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>} else if (type === 'B') {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>// 遊戲 B 邏輯：必須確保年份不重複</p>
+<p class="p1"><span class="Apple-converted-space">                </span>let uniqueYearData = [];</p>
+<p class="p1"><span class="Apple-converted-space">                </span>let years = new Set();</p>
+<p class="p1"><span class="Apple-converted-space">                </span>for (let item of shuffled) {</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>if (!years.has(item.year)) {</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>uniqueYearData.push(item);</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>years.add(item.year);</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>if (uniqueYearData.length === 5) break;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>}</p>
+<p class="p1"><span class="Apple-converted-space">                </span>// 萬一資料庫太小湊不到5個不同年份，就只能有多少拿多少</p>
+<p class="p1"><span class="Apple-converted-space">                </span>currentLevelData = uniqueYearData;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>initGameB();</p>
+<p class="p1"><span class="Apple-converted-space">                </span>showScreen('game-b-screen');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>// --- 遊戲 A 邏輯 ---</p>
+<p class="p1"><span class="Apple-converted-space">        </span>function initGameA() {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const leftContainer = document.getElementById('game-a-left');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const rightContainer = document.getElementById('game-a-right');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>leftContainer.innerHTML = '';</p>
+<p class="p1"><span class="Apple-converted-space">            </span>rightContainer.innerHTML = '';</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>// 建立左側照片槽</p>
+<p class="p1"><span class="Apple-converted-space">            </span>currentLevelData.forEach(item =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const slot = document.createElement('div');</p>
+<p class="p1"><span class="Apple-converted-space">                </span>slot.className = 'card-slot';</p>
+<p class="p1"><span class="Apple-converted-space">                </span>slot.dataset.id = item.id;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>slot.innerHTML = `&lt;div class="img-box"&gt;&lt;img src="${item.img}"&gt;&lt;/div&gt;&lt;div class="drop-zone" style="flex:1; margin-left:10px; min-height:40px; border-bottom:2px dashed #ccc;"&gt;&lt;/div&gt;`;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>leftContainer.appendChild(slot);</p>
+<p class="p2"><span class="Apple-converted-space">                </span></p>
+<p class="p1"><span class="Apple-converted-space">                </span>// 設定每個槽位的接收區</p>
+<p class="p1"><span class="Apple-converted-space">                </span>new Sortable(slot.querySelector('.drop-zone'), {</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>group: 'shared', // 允許互相拖拉</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>animation: 150</p>
+<p class="p1"><span class="Apple-converted-space">                </span>});</p>
+<p class="p1"><span class="Apple-converted-space">            </span>});</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>// 建立右側名稱 (打亂順序)</p>
+<p class="p1"><span class="Apple-converted-space">            </span>let names = [...currentLevelData].sort(() =&gt; 0.5 - Math.random());</p>
+<p class="p1"><span class="Apple-converted-space">            </span>names.forEach(item =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const div = document.createElement('div');</p>
+<p class="p1"><span class="Apple-converted-space">                </span>div.className = 'draggable-item';</p>
+<p class="p1"><span class="Apple-converted-space">                </span>div.textContent = item.name;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>div.dataset.id = item.id; // 綁定答案ID</p>
+<p class="p1"><span class="Apple-converted-space">                </span>rightContainer.appendChild(div);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>});</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>// 右側也可以拖拉</p>
+<p class="p1"><span class="Apple-converted-space">            </span>new Sortable(rightContainer, {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>group: 'shared',</p>
+<p class="p1"><span class="Apple-converted-space">                </span>animation: 150</p>
+<p class="p1"><span class="Apple-converted-space">            </span>});</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>function checkGameA() {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>let correctCount = 0;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const slots = document.querySelectorAll('#game-a-left .card-slot');</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>slots.forEach(slot =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const targetId = slot.dataset.id;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const dropZone = slot.querySelector('.drop-zone');</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const answerItem = dropZone.querySelector('.draggable-item');</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                </span>slot.classList.remove('wrong-answer', 'correct-answer'); // 重置樣式</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                </span>if (answerItem) {</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>if (answerItem.dataset.id === targetId) {</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>correctCount++;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>slot.classList.add('correct-answer');</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>// 鎖定正確的，不讓它再被移動 (選擇性功能)</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>} else {</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>slot.classList.add('wrong-answer');</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">                </span>} else {</p>
+<p class="p1"><span class="Apple-converted-space">                     </span>// 沒填寫算錯</p>
+<p class="p1"><span class="Apple-converted-space">                     </span>slot.classList.add('wrong-answer');</p>
+<p class="p1"><span class="Apple-converted-space">                </span>}</p>
+<p class="p1"><span class="Apple-converted-space">            </span>});</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>if (correctCount === 5) {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>alert("恭喜！全部答對 🎉");</p>
+<p class="p1"><span class="Apple-converted-space">            </span>} else {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>alert(`答對 ${correctCount} 題，請修正紅色框框的部分再試一次！`);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>// --- 遊戲 B 邏輯 ---</p>
+<p class="p1"><span class="Apple-converted-space">        </span>function initGameB() {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const source = document.getElementById('game-b-source');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const target = document.getElementById('game-b-target');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>source.innerHTML = '';</p>
+<p class="p1"><span class="Apple-converted-space">            </span>target.innerHTML = '';</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>// 建立照片卡片</p>
+<p class="p1"><span class="Apple-converted-space">            </span>currentLevelData.forEach(item =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const div = document.createElement('div');</p>
+<p class="p1"><span class="Apple-converted-space">                </span>div.className = 'draggable-item';</p>
+<p class="p1"><span class="Apple-converted-space">                </span>// 顯示照片+文字</p>
+<p class="p1"><span class="Apple-converted-space">                </span>div.innerHTML = `&lt;div style="display:flex; align-items:center; gap:10px;"&gt;&lt;div class="img-box" style="width:50px; height:40px;"&gt;&lt;img src="${item.img}"&gt;&lt;/div&gt;&lt;span&gt;${item.name}&lt;/span&gt;&lt;/div&gt;`;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>div.dataset.year = item.year;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>source.appendChild(div);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>});</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>// 啟用拖拉</p>
+<p class="p1"><span class="Apple-converted-space">            </span>new Sortable(source, { group: 'timeline', animation: 150 });</p>
+<p class="p1"><span class="Apple-converted-space">            </span>new Sortable(target, { group: 'timeline', animation: 150 });</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>function checkGameB() {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const items = document.querySelectorAll('#game-b-target .draggable-item');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>if (items.length &lt; 5) {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>alert("請將所有教室都移到右側(或下方)的時間軸喔！");</p>
+<p class="p1"><span class="Apple-converted-space">                </span>return;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>let isCorrect = true;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>let lastYear = -1;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>items.forEach(item =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const currentYear = parseInt(item.dataset.year);</p>
+<p class="p1"><span class="Apple-converted-space">                </span>item.style.border = "none"; // 重置</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                </span>if (currentYear &lt; lastYear) {</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>// 順序錯了 (現在這個比上一個還舊，代表應該排在上面)</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>isCorrect = false;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>item.style.border = "3px solid var(--wrong)";</p>
+<p class="p1"><span class="Apple-converted-space">                </span>}</p>
+<p class="p1"><span class="Apple-converted-space">                </span>lastYear = currentYear;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>});</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>if (isCorrect) {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>alert("恭喜！全部答對 🎉 時光旅人就是你！");</p>
+<p class="p1"><span class="Apple-converted-space">            </span>} else {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>alert("順序好像有點怪怪的，有標記紅色的地方請調整一下！");</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/script&gt;</p>
+<p class="p1">&lt;/body&gt;</p>
+<p class="p1">&lt;/html&gt;</p>
+</body>
+</html>
