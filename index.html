@@ -206,7 +206,7 @@
             });
         }
 
-        // --- 核心函數：遊戲 B 的資料篩選 ---
+        // --- 核心函數：遊戲 B 的資料篩選 (確保 5 個不同年份) ---
         function getUniqueYearClassrooms(data) {
             if (data.length === 0) return [];
 
@@ -248,7 +248,7 @@
             document.getElementById(screenId).classList.add('active');
         }
 
-        // --- 遊戲開始 (已更新 Game B 邏輯) ---
+        // --- 遊戲開始 ---
         function startGame(type) {
             if (!isDataLoaded) {
                 alert("題目資料還在讀取中，請稍後再試...");
@@ -360,9 +360,8 @@
             shuffledData.forEach(item => {
                 const div = document.createElement('div');
                 div.className = 'draggable-item';
-                // *** 修正處：移除 ${item.year} 的顯示，只保留名稱 ***
+                // 修正處：只顯示照片與名稱，不顯示年份
                 div.innerHTML = `<div style="display:flex; align-items:center; gap:10px;"><div class="img-box" style="width:50px; height:40px;"><img src="${item.img}" onerror="this.src='https://via.placeholder.com/50?text=Error'"></div><span>${item.name}</span></div>`; 
-                // *** 關鍵：年份仍保留在 data-year 屬性中供程式檢查 ***
                 div.dataset.year = item.year;
                 source.appendChild(div);
             });
@@ -372,34 +371,51 @@
             new Sortable(target, { group: 'timeline', animation: 150 });
         }
 
+        // --- 遊戲 B 檢查邏輯 (已修正：同時標記相鄰的兩個錯誤項目) ---
         function checkGameB() {
             const items = document.querySelectorAll('#game-b-target .draggable-item');
+            
             if (items.length < 5) {
                 alert("請將所有教室都移到右側(或下方)的時間軸喔！");
                 return;
             }
 
-            let isCorrect = true;
-            let lastYear = -1;
-
-            // 檢查順序是否由舊到新 (年份必須遞增)
+            // Step 1: 清除所有舊的正確/錯誤標記
             items.forEach(item => {
-                const currentYear = parseInt(item.dataset.year);
-                item.style.border = "none"; 
-
-                // 如果當前年份小於上一個年份，則順序錯誤
-                if (currentYear < lastYear) {
-                    isCorrect = false;
-                    item.style.border = "3px solid var(--wrong)";
-                } 
-
-                lastYear = currentYear;
+                item.classList.remove('wrong-answer', 'correct-answer');
             });
 
+            let isCorrect = true;
+            let lastYear = -1;
+            let lastItem = null; // 用來儲存前一個項目的 DOM 元素
+
+            // Step 2: 檢查每個項目的年份
+            items.forEach(item => {
+                const currentYear = parseInt(item.dataset.year);
+
+                if (currentYear < lastYear) {
+                    isCorrect = false;
+                    
+                    // 標記當前項目 (太舊)
+                    item.classList.add('wrong-answer'); 
+                    
+                    // 標記前一個項目 (太新)
+                    if (lastItem) {
+                        lastItem.classList.add('wrong-answer'); 
+                    }
+                } 
+                
+                lastItem = item; // 更新 lastItem
+                lastYear = currentYear; // 更新 lastYear
+            });
+            
+            // Step 3: 顯示結果
             if (isCorrect) {
+                // 如果全部答對，將所有項目標記為正確 (綠色)
+                items.forEach(item => item.classList.add('correct-answer'));
                 alert("恭喜！全部答對 🎉 時光旅人就是你！");
             } else {
-                alert("順序好像有點怪怪的，有標記紅色的地方請調整一下！\n提示：由舊(上)到新(下)！");
+                alert("順序好像有點怪怪的，有標記紅色的地方請調整一下！\n提示：紅色框框代表該項目與它相鄰的項目順序有誤！");
             }
         }
     </script>
