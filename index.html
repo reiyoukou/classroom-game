@@ -207,19 +207,12 @@
         }
 
         // --- 核心函數：遊戲 B 的資料篩選 ---
-        /**
-         * 專業的資料篩選函數：確保選出 5 個不同年份的教室。
-         * 1. 將所有教室按年份分組。
-         * 2. 隨機選取 5 個不同的年份。
-         * 3. 從每個選定的年份組中，隨機挑選一間教室。
-         */
         function getUniqueYearClassrooms(data) {
             if (data.length === 0) return [];
 
             // Step 1: 按年份分組 (Map: {year: [classroom1, classroom2, ...]})
             const groupedByYear = data.reduce((acc, item) => {
                 const year = item.year;
-                // 確保年份是有效的數字 (例如 2016)
                 if (typeof year === 'number' && year > 1900) { 
                     if (!acc[year]) {
                         acc[year] = [];
@@ -300,7 +293,6 @@
                 const slot = document.createElement('div');
                 slot.className = 'card-slot';
                 slot.dataset.id = item.id;
-                // onerror 是在圖片連結失效時顯示一個「找不到圖」的佔位符，避免畫面空白
                 slot.innerHTML = `<div class="img-box"><img src="${item.img}" alt="教室照片" onerror="this.src='https://via.placeholder.com/100?text=NoImage'"></div><div class="drop-zone" style="flex:1; margin-left:10px; min-height:40px; border-bottom:2px dashed #ccc;"></div>`;
                 leftContainer.appendChild(slot);
                 
@@ -342,11 +334,9 @@
                         correctCount++;
                         slot.classList.add('correct-answer');
                     } else {
-                        // 答錯，標記紅色
                         slot.classList.add('wrong-answer');
                     }
                 } else {
-                     // 沒放答案，標記紅色
                      slot.classList.add('wrong-answer');
                 }
             });
@@ -370,8 +360,9 @@
             shuffledData.forEach(item => {
                 const div = document.createElement('div');
                 div.className = 'draggable-item';
-                // 顯示照片與名稱
-                div.innerHTML = `<div style="display:flex; align-items:center; gap:10px;"><div class="img-box" style="width:50px; height:40px;"><img src="${item.img}" onerror="this.src='https://via.placeholder.com/50?text=Error'"></div><span>${item.name} (${item.year})</span></div>`;
+                // *** 修正處：移除 ${item.year} 的顯示，只保留名稱 ***
+                div.innerHTML = `<div style="display:flex; align-items:center; gap:10px;"><div class="img-box" style="width:50px; height:40px;"><img src="${item.img}" onerror="this.src='https://via.placeholder.com/50?text=Error'"></div><span>${item.name}</span></div>`; 
+                // *** 關鍵：年份仍保留在 data-year 屬性中供程式檢查 ***
                 div.dataset.year = item.year;
                 source.appendChild(div);
             });
@@ -396,15 +387,11 @@
                 const currentYear = parseInt(item.dataset.year);
                 item.style.border = "none"; 
 
-                // 如果當前年份小於或等於上一個年份，則順序錯誤
+                // 如果當前年份小於上一個年份，則順序錯誤
                 if (currentYear < lastYear) {
                     isCorrect = false;
                     item.style.border = "3px solid var(--wrong)";
-                } else if (currentYear === lastYear && lastYear !== -1) {
-                    // 如果年份相同，則也是錯誤 (因為我們已經保證選出的年份獨特，如果還出現相同代表資料可能有問題，但程式中理論上不會發生)
-                    isCorrect = false;
-                    item.style.border = "3px solid var(--wrong)";
-                }
+                } 
 
                 lastYear = currentYear;
             });
