@@ -6,7 +6,7 @@
     <title>教室大考驗 - 粉彩版</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght=400;700&display=swap" rel="stylesheet">
     
     <style>
         /* 定義粉黃、粉藍基調顏色 */
@@ -90,6 +90,7 @@
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
+            cursor: zoom-in; /* 提示圖片可點擊放大 */
         }
         .img-box img { width: 100%; height: 100%; object-fit: cover; }
 
@@ -120,6 +121,53 @@
 
         #loading-msg { font-weight: bold; color: var(--main-blue); margin-top: 10px; }
 
+        /* Lightbox Modal 樣式 */
+        #image-modal { 
+            display: none; 
+            position: fixed; 
+            z-index: 100; 
+            left: 0; 
+            top: 0; 
+            width: 100%; 
+            height: 100%; 
+            overflow: auto; 
+            background-color: rgba(0,0,0,0.9); 
+        }
+        #modal-content {
+            margin: auto;
+            display: block;
+            width: 90%;
+            max-width: 700px;
+            margin-top: 50px;
+            animation-name: zoom;
+            animation-duration: 0.6s;
+        }
+        #close-modal {
+            position: absolute;
+            top: 15px;
+            right: 35px;
+            color: #f1f1f1;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        #close-modal:hover, #close-modal:focus {
+            color: #bbb;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        @media only screen and (max-width: 700px){
+            #modal-content {
+                width: 100%;
+            }
+        }
+        @keyframes zoom {
+            from {transform: scale(0)} 
+            to {transform: scale(1)}
+        }
+        /* 結束 Lightbox Modal 樣式 */
+
         @keyframes shake {
             0% { transform: translateX(0); }
             25% { transform: translateX(-5px); }
@@ -141,7 +189,7 @@
 
     <div id="game-a-screen" class="screen">
         <h2>📍 教室名稱連連看</h2>
-        <p>請將右側名稱拖曳到左側正確照片上</p>
+        <p>請點擊左側照片放大觀看，並將右側名稱拖曳到正確照片上</p>
         <div class="game-container">
             <div id="game-a-left" style="flex: 1;"></div>
             <div id="game-a-right" style="flex: 1;"></div>
@@ -168,12 +216,34 @@
         <button class="btn btn-yellow" onclick="showScreen('menu-screen')">回首頁</button>
     </div>
 
+    <div id="image-modal" onclick="closeImageModal(event)">
+        <span id="close-modal">&times;</span>
+        <img id="modal-content">
+    </div>
+
     <script>
         // --- 全域變數 ---
         let rawData = [];
         let currentLevelData = [];
         let isDataLoaded = false;
 
+        // --- 新增：圖片放大功能函數 ---
+        function openImageModal(imgSrc) {
+            const modal = document.getElementById('image-modal');
+            const modalImg = document.getElementById('modal-content');
+            modal.style.display = "block";
+            modalImg.src = imgSrc;
+        }
+
+        // 新增：關閉圖片放大功能函數 (點擊背景或叉叉時)
+        function closeImageModal(event) {
+             const modal = document.getElementById('image-modal');
+             // 確保只有點擊背景或 X 鍵時才關閉，點擊圖片本身不關閉
+             if (event.target === modal || event.target.id === 'close-modal') {
+                 modal.style.display = "none";
+             }
+        }
+        
         // --- CSV 讀取邏輯 (網頁載入時自動執行) ---
         window.onload = function() {
             Papa.parse("classrooms.csv", {
@@ -281,7 +351,7 @@
             }
         }
 
-        // --- 遊戲 A 邏輯 (連連看) ---
+        // --- 遊戲 A 邏輯 (連連看) (已加入點擊放大功能) ---
         function initGameA() {
             const leftContainer = document.getElementById('game-a-left');
             const rightContainer = document.getElementById('game-a-right');
@@ -293,7 +363,8 @@
                 const slot = document.createElement('div');
                 slot.className = 'card-slot';
                 slot.dataset.id = item.id;
-                slot.innerHTML = `<div class="img-box"><img src="${item.img}" alt="教室照片" onerror="this.src='https://via.placeholder.com/100?text=NoImage'"></div><div class="drop-zone" style="flex:1; margin-left:10px; min-height:40px; border-bottom:2px dashed #ccc;"></div>`;
+                // *** 修正處：在 img-box 上加入 onclick 事件來開啟放大視窗 ***
+                slot.innerHTML = `<div class="img-box" onclick="openImageModal('${item.img}')"><img src="${item.img}" alt="教室照片" onerror="this.src='https://via.placeholder.com/100?text=NoImage'"></div><div class="drop-zone" style="flex:1; margin-left:10px; min-height:40px; border-bottom:2px dashed #ccc;"></div>`;
                 leftContainer.appendChild(slot);
                 
                 new Sortable(slot.querySelector('.drop-zone'), {
@@ -360,7 +431,7 @@
             shuffledData.forEach(item => {
                 const div = document.createElement('div');
                 div.className = 'draggable-item';
-                // 修正處：只顯示照片與名稱，不顯示年份
+                // 只顯示照片與名稱，不顯示年份
                 div.innerHTML = `<div style="display:flex; align-items:center; gap:10px;"><div class="img-box" style="width:50px; height:40px;"><img src="${item.img}" onerror="this.src='https://via.placeholder.com/50?text=Error'"></div><span>${item.name}</span></div>`; 
                 div.dataset.year = item.year;
                 source.appendChild(div);
@@ -371,7 +442,7 @@
             new Sortable(target, { group: 'timeline', animation: 150 });
         }
 
-        // --- 遊戲 B 檢查邏輯 (已修正：同時標記相鄰的兩個錯誤項目) ---
+        // --- 遊戲 B 檢查邏輯 (同時標記相鄰的兩個錯誤項目) ---
         function checkGameB() {
             const items = document.querySelectorAll('#game-b-target .draggable-item');
             
